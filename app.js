@@ -4,7 +4,7 @@ var wss = new WebSocketServer({ port: process.env.PORT || 80 })
 var users
 
 wss.on('connection', function connection(ws) {
-  var user
+  var users = []
   
   ws.on('message', function incoming(msg) {
     console.log('received: %s', msg)
@@ -18,7 +18,7 @@ wss.on('connection', function connection(ws) {
           users.push(user)
         break
       case 'key':
-        ws.send('key' + cmd[1])
+        ws.send(['key', cmd[1]].join(' '))
     }
   })
 })
