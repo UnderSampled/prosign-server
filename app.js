@@ -1,11 +1,13 @@
 ﻿var WebSocketServer = require('ws').Server
 var wss = new WebSocketServer({ port: process.env.PORT || 80 })
 
-var users
+var users = []
+var room = []
 
 wss.on('connection', function connection(ws) {
-  var users = []
-  
+  var user
+  room.push(ws)
+
   ws.on('message', function incoming(msg) {
     console.log('received: %s', msg)
     cmd = msg.split(' ')
@@ -18,7 +20,12 @@ wss.on('connection', function connection(ws) {
           users.push(user)
         break
       case 'key':
-        ws.send(['key', cmd[1]].join(' '))
+	for (member of room) {
+          if (member !== ws) member.send(['key', cmd[1]].join(' '))
+        }
+        console.log(room.length)
     }
   })
+
+  ws.on('close', function () { room.splice(room.indexOf(ws), 1)})
 })
