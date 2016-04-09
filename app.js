@@ -1,31 +1,47 @@
-﻿var WebSocketServer = require('ws').Server
-var wss = new WebSocketServer({ port: process.env.PORT || 80 })
+﻿var server = require('http').createServer()
+var WebSocketServer = require('ws').Server
+var wss = new WebSocketServer({server: server})
+var express = require('express')
+var app = express()
+var port = process.env.PORT || 80
 
 var users = []
 var room = []
 
-wss.on('connection', function connection(ws) {
+wss.on('connection', function connection (ws) {
   var user
   room.push(ws)
 
-  ws.on('message', function incoming(msg) {
+  ws.on('message', function incoming (msg) {
     console.log('received: %s', msg)
-    cmd = msg.split(' ')
+    var cmd = msg.split(' ')
     switch (cmd[0]) {
       case 'id':
-        id = cmd[1]
-        user = users.find(function (user) {return user.id === id})
-        if (!user)
+        var id = cmd[1]
+        user = users.find(function (user) { return user.id === id })
+        if (!user) {
           user = {id: id, level: 0}
           users.push(user)
+        }
         break
       case 'key':
-	for (member of room) {
-          if (member !== ws) member.send(['key', cmd[1]].join(' '))
+        for (var member of room) {
+          if (member !== ws) { member.send(['key', cmd[1]].join(' ')) }
         }
-        console.log(room.length)
+        break
     }
   })
 
-  ws.on('close', function () { room.splice(room.indexOf(ws), 1)})
+  ws.on('close', function () { room.splice(room.indexOf(ws), 1) })
 })
+
+app.get('/', function (req, res) {
+  res.sendFile('index.html', {root: 'www'})
+})
+
+app.get(/^(.+)$/, function (req, res) {
+  res.sendFile(req.params[0], {root: 'www'})
+})
+
+server.on('request', app)
+server.listen(port, function () { console.log('Listening on ' + server.address().port) })
