@@ -1,0 +1,59 @@
+﻿body
+  font-family sans-serif
+  background-color rgba(0, 0, 0, 0.1)
+  margin 0
+
+#keyer
+  display block
+  background-color cornflowerblue
+  margin 3rem auto 0 auto
+  
+  width 10rem
+  height 10rem
+  border-radius 5rem
+  border none
+  box-shadow 0 2pt 5pt rgba(0, 0, 0, 0.3)
+  transition 0.05s
+  z-index 1
+
+  &.hot
+    width 12rem
+    height 12rem	
+    border-radius 6rem
+    margin-top 2rem
+
+  &::-moz-focus-inner
+    outline 0 none !important
+    border 0
+
+#messageBox
+  box-sizing border-box
+  width 100%
+  position absolute
+  bottom 0
+  background-color white
+  box-shadow 0 0pt 3pt rgba(0, 0, 0, 0.3)
+  padding 8px 12px
+  font-size large
+
+  #text
+    box-sizing border-box
+    width 100%
+    height 2em
+    border none
+    background-color transparent
+    font-size inherit
+
+  #send
+    display block
+    margin-left auto
+    width 2em
+    color #777
+    font-size x-large
+    border none
+    outline none
+    background none
+
+    &::-moz-focus-inner
+      outline 0 none !important
+      border 0
